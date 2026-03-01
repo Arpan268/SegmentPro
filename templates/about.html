@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - SegmentPro</title>
+    <link rel="stylesheet" href="{% static 'assets/style.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">SegmentPro</div>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">Dashboard</a></li>
+            <li><a href="{% url 'about' %}" class="active">About Us</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <header class="page-header">
+            <h1>Customer Segmentation Analysis</h1>
+            </header>   
+        <section class="about-section card">
+            <h1>About the Developer</h1>
+            <div class="profile-content">
+                <div class="bio">
+                    <p>Hello! I am a B.Tech Computer Science student at MAKAUT, graduating in the class of 2026. Based in Pandua, West Bengal, I am passionate about software development and building practical, data-driven applications.</p>
+                    
+                    <p>This Customer Segmentation project was developed to bridge the gap between machine learning concepts and intuitive user interfaces. My goal is to create scalable tech solutions while continuing to explore opportunities in the software engineering field.</p>
+                </div>
+                <br
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <ul>
+                        <li><strong>Location:</strong> Pandua, West Bengal, India</li>
+                        <li><strong>Email:</strong> <a href="https://mail.google.com/mail/?view=cm&fs=1&to=arpanhalderah3@gmail.com" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; font-weight: 500;">arpanhalderah3@gmail.com</a></li>
+                        <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/arpan-halder" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; font-weight: 500;">linkedin.com/in/arpan-halder</a></li>
+                        <li><strong>GitHub:</strong> <a href="https://github.com/Arpan268" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; font-weight: 500;">github.com/Arpan268</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
