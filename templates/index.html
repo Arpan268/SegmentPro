@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'assets/style.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
+
 <body>
     <nav class="navbar">
         <div class="logo">SegmentPro</div>
@@ -20,15 +22,20 @@
     <main class="container">
         <header class="page-header">
             <h1>Customer Segmentation Analysis</h1>
-            <p style="max-width: 800px; margin: 0 auto; line-height: 1.6;">This intelligent segmentation tool empowers mall management to categorize shoppers based on their purchasing behavior and demographics. By identifying distinct customer profiles, you can drive targeted marketing campaigns and optimize retail strategies.</p>
+            <p style="max-width: 800px; margin: 0 auto; line-height: 1.6;">This intelligent segmentation tool empowers
+                mall management to categorize shoppers based on their purchasing behavior and demographics. By
+                identifying distinct customer profiles, you can drive targeted marketing campaigns and optimize retail
+                strategies.</p>
         </header>
 
         <section class="upload-section card">
             <h2>Data Upload</h2>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 1.5rem; text-align: center; background-color: #f8fafc; padding: 0.75rem; border-radius: 6px; border: 1px solid #e2e8f0;">
-                <strong>Required Data Format:</strong> Your CSV file must contain columns for <em>Annual Income (k$), and Spending Score (1-100)</em>.
+            <p
+                style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 1.5rem; text-align: center; background-color: #f8fafc; padding: 0.75rem; border-radius: 6px; border: 1px solid #e2e8f0;">
+                <strong>Required Data Format:</strong> Your CSV file must contain columns for <em>CustomerID, Gender,
+                    Age, Annual Income (k$), and Spending Score (1-100)</em>.
             </p>
-            
+
             <div class="upload-area" id="upload-area" onclick="document.getElementById('csv-file').click()">
                 <p>Drag and drop your CSV file here, or click to browse.</p>
                 <input type="file" id="csv-file" accept=".csv" hidden>
@@ -39,15 +46,15 @@
         <section class="results-section card" style="display: none;" id="results-container">
             <h2>Segmentation Results</h2>
             <div id="results-display" style="margin-top: 1.5rem;">
-                </div>
+            </div>
         </section>
     </main>
 
     <script>
-        document.getElementById('csv-file').addEventListener('change', function(e) {
+        document.getElementById('csv-file').addEventListener('change', function (e) {
             const fileName = e.target.files[0]?.name;
             const uploadText = document.querySelector('.upload-area p');
-            
+
             if (fileName) {
                 uploadText.innerHTML = `<strong>File Ready:</strong> ${fileName}`;
                 uploadText.style.color = 'var(--primary)';
@@ -61,7 +68,7 @@
             const fileInput = document.getElementById('csv-file');
             const resultsContainer = document.getElementById('results-container');
             const display = document.getElementById('results-display');
-            
+
             if (!fileInput.files.length) {
                 resultsContainer.style.display = 'block';
                 display.innerHTML = '<p style="color: #ef4444;">Please select the Mall Customers CSV file first.</p>';
@@ -73,6 +80,7 @@
 
             resultsContainer.style.display = 'block';
             display.innerHTML = '<p style="color: var(--primary); font-weight: bold; text-align: center;">Running K-Means Algorithm & Generating Insights... Please wait.</p>';
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
 
             try {
                 const response = await fetch('/process/', {
@@ -80,28 +88,31 @@
                     body: formData
                 });
                 const result = await response.json();
-                
+
                 if (result.status === 'success') {
-                    // 1. Executive Summary
                     let overviewHTML = `
                         <h3 style="margin-bottom: 1rem; color: var(--text-main); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">1. Executive Summary</h3>
                         <div style="display: flex; gap: 1rem; margin-bottom: 2.5rem; flex-wrap: wrap;">
-                            <div style="flex: 1; min-width: 200px; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); text-align: center;">
+                            <div style="flex: 1; min-width: 150px; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); text-align: center;">
                                 <h4 style="color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase;">Total Customers</h4>
                                 <p style="font-size: 2.5rem; font-weight: bold; color: var(--primary);">${result.overview.total_customers}</p>
                             </div>
-                            <div style="flex: 1; min-width: 200px; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); text-align: center;">
-                                <h4 style="color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase;">Avg. Annual Income</h4>
+                            <div style="flex: 1; min-width: 150px; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase;">Avg. Income</h4>
                                 <p style="font-size: 2.5rem; font-weight: bold; color: var(--primary);">$${result.overview.avg_income}k</p>
                             </div>
-                            <div style="flex: 1; min-width: 200px; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); text-align: center;">
-                                <h4 style="color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase;">Avg. Spending Score</h4>
-                                <p style="font-size: 2.5rem; font-weight: bold; color: var(--primary);">${result.overview.avg_spending}/100</p>
+                            <div style="flex: 1; min-width: 150px; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase;">Avg. Spending</h4>
+                                <p style="font-size: 2.5rem; font-weight: bold; color: var(--primary);">${result.overview.avg_spending}</p>
+                            </div>
+                            <div style="flex: 1; min-width: 150px; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase;">Clustering Quality</h4>
+                                <p style="font-size: 2.5rem; font-weight: bold; color: #10b981;">${result.overview.model_accuracy}</p>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Silhouette Score</span>
                             </div>
                         </div>
                     `;
 
-                    // 2. Percentages
                     let percentagesHTML = `
                         <h3 style="margin-bottom: 1rem; color: var(--text-main); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">2. Customer Segment Distribution</h3>
                         <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem;">
@@ -116,7 +127,6 @@
                     }
                     percentagesHTML += '</div>';
 
-                    // 6. Strategic Recommendations (Moved to the end)
                     let suggestionsHTML = `
                         <h3 style="margin-bottom: 1rem; color: var(--text-main); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">6. Strategic Recommendations</h3>
                         <div style="display: grid; gap: 1.5rem; margin-bottom: 3rem;">
@@ -133,7 +143,6 @@
                     }
                     suggestionsHTML += '</div>';
 
-                    // Combine into the wrapper div for the PDF generator
                     display.innerHTML = `
                         <div id="pdf-report-content" style="padding: 1rem; background: white;">
                             <div style="text-align: center; margin-bottom: 2rem;">
@@ -143,15 +152,18 @@
                             
                             ${overviewHTML}
                             ${percentagesHTML}
-                            
-                            <h3 style="margin-bottom: 1rem; color: var(--text-main); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">3. Customer Segments Map</h3>
-                            <div style="text-align: center; margin-bottom: 3rem;">
-                                <img src="data:image/png;base64,${result.plot_cluster}" alt="Customer Segments Plot" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); background: white; padding: 1rem;">
+                            <div style="page-break-inside: avoid;">
+                                <h3 style="margin-bottom: 1rem; color: var(--text-main); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">3. Customer Segments Map</h3>
+                                <div style="text-align: center; margin-bottom: 3rem;">
+                                    <img src="data:image/png;base64,${result.plot_cluster}" alt="Customer Segments Plot" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); background: white; padding: 1rem;">
+                                </div>
                             </div>
                             
-                            <h3 style="margin-bottom: 1rem; color: var(--text-main); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">4. Demographic Breakdown</h3>
-                            <div style="text-align: center; margin-bottom: 3rem;">
-                                <img src="data:image/png;base64,${result.plot_bar}" alt="Customer Distribution Bar Chart" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); background: white; padding: 1rem;">
+                            <div style="page-break-inside: avoid;">
+                                <h3 style="margin-bottom: 1rem; color: var(--text-main); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">4. Demographic Breakdown</h3>
+                                <div style="text-align: center; margin-bottom: 3rem;">
+                                    <img src="data:image/png;base64,${result.plot_bar}" alt="Customer Distribution Bar Chart" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); background: white; padding: 1rem;">
+                                </div>
                             </div>
                             
                             <h3 style="margin-bottom: 1rem; color: var(--text-main); border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">5. Complete Manager's Directory</h3>
@@ -169,28 +181,24 @@
                         </div>
                     `;
 
-                    // Attach the PDF Generation Event Listener
                     document.getElementById('download-pdf-btn').addEventListener('click', () => {
                         const element = document.getElementById('pdf-report-content');
                         const tableContainer = document.getElementById('table-container');
-                        
-                        // Temporarily remove table scrolling so all rows print on the PDF
+
                         const originalMaxHeight = tableContainer.style.maxHeight;
                         tableContainer.style.maxHeight = 'none';
                         tableContainer.style.overflow = 'visible';
-                        
-                        // PDF Configuration options
+
                         const opt = {
-                            margin:       0.3,
-                            filename:     'SegmentPro_Manager_Report.pdf',
-                            image:        { type: 'jpeg', quality: 0.98 },
-                            html2canvas:  { scale: 2, useCORS: true },
-                            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                            margin: 0.3,
+                            filename: 'SegmentPro_Manager_Report.pdf',
+                            image: { type: 'jpeg', quality: 0.98 },
+                            html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+                            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+                            pagebreak: { mode: 'avoid-all' }
                         };
-                        
-                        // Generate and save
+
                         html2pdf().set(opt).from(element).save().then(() => {
-                            // Shrink the table back to normal size after download finishes
                             tableContainer.style.maxHeight = originalMaxHeight;
                             tableContainer.style.overflow = 'auto';
                         });
@@ -205,4 +213,5 @@
         });
     </script>
 </body>
+
 </html>
